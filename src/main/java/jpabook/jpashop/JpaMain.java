@@ -1,4 +1,4 @@
-package hellojpa;
+package jpabook.jpashop;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -8,27 +8,17 @@ import javax.persistence.Persistence;
 public class JpaMain {
 
     public static void main(String[] args) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
-
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpashop");
         EntityManager em = emf.createEntityManager();
-
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Member member = new Member();
-            member.setUsername("A");
-
-            System.out.println("===== before persist =====");
-            System.out.println("member id: " + member.getId());
-            em.persist(member);
-            System.out.println("===== after persist =====");
-            System.out.println("member id: " + member.getId());
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
         } finally {
-            em.close();
+            em.clear();
         }
 
         emf.close();
