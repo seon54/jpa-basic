@@ -16,9 +16,14 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Member member = new Member();
+            member.setUsername("A");
 
-            // 영속
-
+            System.out.println("===== before persist =====");
+            System.out.println("member id: " + member.getId());
+            em.persist(member);
+            System.out.println("===== after persist =====");
+            System.out.println("member id: " + member.getId());
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
