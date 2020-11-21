@@ -1,7 +1,5 @@
 package jpabook.jpashop.domain;
 
-import org.hibernate.annotations.JoinColumnOrFormula;
-
 import javax.persistence.*;
 
 @Entity
@@ -15,9 +13,9 @@ public class Member {
     @Column(name = "USERNAME")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(insertable = false, updatable = false, name = "TEAM_ID")
-    private Team team;
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
 
     public Long getId() {
         return id;
