@@ -1,7 +1,6 @@
 package jpabook.jpashop.domain;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ORDERS")
@@ -15,7 +14,9 @@ public class Order {
     @Column(name = "MEMBER_ID")
     private Long memberId;
 
-    private LocalDateTime orderDate;
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID")
+    private Delivery delivery;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -34,14 +35,6 @@ public class Order {
 
     public void setMemberId(Long memberId) {
         this.memberId = memberId;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
     }
 
     public OrderStatus getStatus() {
