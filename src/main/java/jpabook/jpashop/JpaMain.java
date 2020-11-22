@@ -1,5 +1,6 @@
 package jpabook.jpashop;
 
+import jpabook.jpashop.domain.Book;
 import jpabook.jpashop.domain.Member;
 
 import javax.persistence.EntityManager;
@@ -17,15 +18,11 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member member = new Member();
-            member.setName("user1");
-            member.setCreatedBy("Kim");
-            member.setCreatedDate(LocalDateTime.now());
+            Book book = new Book();
+            book.setName("JPA");
+            book.setAuthor("Kim");
 
-            em.persist(member);
-
-            em.flush();
-            em.clear();
+            em.persist(book);
 
             tx.commit();
         } catch (Exception e) {
