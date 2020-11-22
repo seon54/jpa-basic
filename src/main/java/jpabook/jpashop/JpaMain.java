@@ -1,9 +1,11 @@
 package jpabook.jpashop;
 
 import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.domain.Team;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 public class JpaMain {
@@ -15,18 +17,32 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            Team team2 = new Team();
+            team2.setName("teamB");
+            em.persist(team2);
+
             Member member1 = new Member();
             member1.setName("user1");
+            member1.setTeam(team);
             em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setName("user2");
+            member2.setTeam(team2);
+            em.persist(member2);
+
 
             em.flush();
             em.clear();
 
-            Member m1 = em.getReference(Member.class, member1.getId());
-            System.out.println("m1 = " + m1.getClass());
-            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(m1));
-            Hibernate.initialize(m1);
-            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(m1));
+//            Member m1 = em.find(Member.class, member1.getId());
+
+            List<Member> members = em.createQuery("select m from Member m left join fetch m.team", Member.class)
+                    .getResultList();
 
 
             tx.commit();
