@@ -1,7 +1,6 @@
 package jpabook.jpashop;
 
-import jpabook.jpashop.domain.Child;
-import jpabook.jpashop.domain.Parent;
+import jpabook.jpashop.domain.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,22 +17,13 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Child child1 = new Child();
-            Child child2 = new Child();
 
-            Parent parent = new Parent();
-            parent.addChild(child1);
-            parent.addChild(child2);
+            Member member = new Member();
+            member.setName("userA");
+            member.setAddress(new Address("city", "street", "10"));
+            member.setPeriod(new Period());
 
-            em.persist(parent);
-            em.persist(child1);
-            em.persist(child2);
-
-            em.flush();
-            em.clear();
-
-            Parent findParent = em.find(Parent.class, parent.getId());
-            em.remove(findParent);
+            em.persist(member);
 
             tx.commit();
         } catch (Exception e) {
