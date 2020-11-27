@@ -1,12 +1,8 @@
 package jpabook.jpashop;
 
-import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 
 
 public class JpaMain {
@@ -19,10 +15,13 @@ public class JpaMain {
 
         try {
             Member member = new Member();
-            member.setName("A");
-            member.setAddress(new Address("Seoul", "Gangnam", "123"));
-
+            member.setUsername("userA");
             em.persist(member);
+
+            Member result = em.createQuery("select m from Member as m where m.username = :username", Member.class)
+                    .setParameter("username", "userA")
+                    .getSingleResult();
+            System.out.println("result = " + result.getUsername());
 
             tx.commit();
         } catch (Exception e) {
@@ -31,8 +30,6 @@ public class JpaMain {
         } finally {
             em.clear();
         }
-
         emf.close();
-
     }
 }
