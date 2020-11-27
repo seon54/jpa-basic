@@ -1,29 +1,22 @@
 package jpabook.jpashop.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Member {
 
     @Id
     @GeneratedValue
-    @Column(name = "MEMBER_ID")
     private Long id;
 
     @Column(name = "USERNAME")
-    private String name;
+    private String username;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    private int age;
+
+    @ManyToOne
     @JoinColumn(name = "TEAM_ID")
     private Team team;
-
-    @OneToMany(mappedBy = "member")
-    private List<Order> orders = new ArrayList<>();
-
-    @Embedded
-    private Address address;
 
     public Long getId() {
         return id;
@@ -33,36 +26,19 @@ public class Member {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public Team getTeam() {
-        return team;
+    public int getAge() {
+        return age;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setAge(int age) {
+        this.age = age;
     }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
 }

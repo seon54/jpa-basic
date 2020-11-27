@@ -1,24 +1,17 @@
 package jpabook.jpashop.domain;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn
-public abstract class Item extends BaseEntity {
+public class Product {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "ITEM_ID")
+    @Id @GeneratedValue
     private Long id;
-
     private String name;
     private int price;
-
-    @ManyToMany(mappedBy = "items")
-    private List<Category> categories = new ArrayList<>();
+    private int stockAmount;
 
     public Long getId() {
         return id;
@@ -44,4 +37,11 @@ public abstract class Item extends BaseEntity {
         this.price = price;
     }
 
+    public int getStockAmount() {
+        return stockAmount;
+    }
+
+    public void setStockAmount(int stockAmount) {
+        this.stockAmount = stockAmount;
+    }
 }
