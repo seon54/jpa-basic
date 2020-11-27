@@ -1,6 +1,7 @@
 package jpabook.jpashop;
 
 import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.domain.MemberType;
 import jpabook.jpashop.domain.Team;
 
 import javax.persistence.EntityManager;
@@ -8,6 +9,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
+
+import static jpabook.jpashop.domain.MemberType.ADMIN;
 
 
 public class JpaMain {
@@ -27,6 +30,7 @@ public class JpaMain {
             member.setUsername("member");
             member.setAge(10);
             member.changeTeam(team);
+            member.setType(ADMIN);
             em.persist(member);
 
             Team team2 = new Team();
@@ -37,19 +41,20 @@ public class JpaMain {
             member2.setUsername("member2");
             member2.setAge(10);
             member2.changeTeam(team2);
+            member2.setType(MemberType.USER);
             em.persist(member2);
 
             em.flush();
             em.clear();
 
-            String query = "select m from Member m left join Team t on t.name = m.username";
+            String query = "select m from Member m where m.type = :usertype";
             List<Member> members = em.createQuery(query, Member.class)
+                    .setParameter("usertype", ADMIN)
                     .getResultList();
 
             System.out.println("members.size() = " + members.size());
             for (Member mem : members) {
                 System.out.println("mem = " + mem);
-                System.out.println("mem.getTeam().getName() = " + mem.getTeam().getName());
             }
 
             tx.commit();
