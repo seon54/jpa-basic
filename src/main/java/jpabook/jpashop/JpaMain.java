@@ -1,11 +1,12 @@
 package jpabook.jpashop;
 
-import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
-import jpabook.jpashop.domain.MemberDTO;
 import jpabook.jpashop.domain.Team;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import java.util.List;
 
 
@@ -18,35 +19,37 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
             Member member = new Member();
-            member.setUsername("userA");
+            member.setUsername("member");
+            member.setAge(10);
+            member.changeTeam(team);
             em.persist(member);
+
+            Team team2 = new Team();
+            team2.setName("teamB");
+            em.persist(team2);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setAge(10);
+            member2.changeTeam(team2);
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            List resultList = em.createQuery("select m.username, m.age from Member m")
+            String query = "select m from Member m left join Team t on t.name = m.username";
+            List<Member> members = em.createQuery(query, Member.class)
                     .getResultList();
 
-            Object o = resultList.get(0);
-            Object[] result = (Object[]) o;
-            System.out.println("result[0] = " + result[0]);
-            System.out.println("result[1] = " + result[1]);
-
-            List<Object[]> resultList2 = em.createQuery("select m.username, m.age from Member m")
-                    .getResultList();
-
-            for (Object[] objects : resultList2) {
-                System.out.println("objects[0] = " + objects[0]);
-                System.out.println("objects[1] = " + objects[1]);
-            }
-
-            List<MemberDTO> dtoList = em.createQuery("select new jpabook.jpashop.domain.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
-                    .getResultList();
-
-            for (MemberDTO memberDTO : dtoList) {
-                System.out.println("memberDTO = " + memberDTO.getUsername());
-                System.out.println("memberDTO.getAge() = " + memberDTO.getAge());
+            System.out.println("members.size() = " + members.size());
+            for (Member mem : members) {
+                System.out.println("mem = " + mem);
+                System.out.println("mem.getTeam().getName() = " + mem.getTeam().getName());
             }
 
             tx.commit();
