@@ -55,12 +55,11 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            Member findMember = em.createNamedQuery("Member.findByUsername", Member.class)
-                    .setParameter("username", "member2")
-                    .getSingleResult();
-
-            System.out.println("findMember = " + findMember);
-
+            int resultCount = em.createQuery("update Member m set m.age = 20").executeUpdate();
+            System.out.println("resultCount = " + resultCount);
+            
+            Member member1 = em.find(Member.class, member.getId());
+            System.out.println("member1.getAge() = " + member1.getAge());
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
