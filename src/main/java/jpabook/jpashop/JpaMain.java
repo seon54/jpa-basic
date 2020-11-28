@@ -28,7 +28,7 @@ public class JpaMain {
 
             Member member = new Member();
             member.setUsername("member");
-            member.setAge(10);
+            member.setAge(70);
             member.changeTeam(team);
             member.setType(ADMIN);
             em.persist(member);
@@ -44,17 +44,49 @@ public class JpaMain {
             member2.setType(MemberType.USER);
             em.persist(member2);
 
+            Member member3 = new Member();
+            member3.setUsername(null);
+            member3.setAge(10);
+            em.persist(member3);
+
+            Member member4 = new Member();
+            member4.setUsername("관리자");
+            em.persist(member4);
+
             em.flush();
             em.clear();
 
-            String query = "select m from Member m where m.type = :usertype";
-            List<Member> members = em.createQuery(query, Member.class)
-                    .setParameter("usertype", ADMIN)
+            // 기본 case 문
+            System.out.println("===============  기본 case  ===============");
+            String query = "select " +
+                    "case when m.age <= 10 then '학생요금' " +
+                            "when m.age >= 60 then '경로요금' " +
+                            "else '일반요금' " +
+                    "end " +
+                    "from Member m";
+            List<String> resultList = em.createQuery(query, String.class)
                     .getResultList();
 
-            System.out.println("members.size() = " + members.size());
-            for (Member mem : members) {
-                System.out.println("mem = " + mem);
+            for (String s : resultList) {
+                System.out.println("s = " + s);
+            }
+
+            // 조건 case식 (coalesce)
+            System.out.println("===============  coalesce  ===============");
+            String query2 = "select coalesce(m.username, '이름 없는 회원') from Member m";
+            List<String> result2 = em.createQuery(query2, String.class).getResultList();
+
+            for (String result : result2) {
+                System.out.println("result = " + result);
+            }
+
+            // 조건 case식 (nullif)
+            System.out.println("===============  nullif  ===============");
+            String query3 = "select nullif(m.username, '관리자') from Member m";
+            List<String> result3 = em.createQuery(query3, String.class).getResultList();
+
+            for (String result : result3) {
+                System.out.println("result = " + result);
             }
 
             tx.commit();
