@@ -55,34 +55,11 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            // entity 직접 사용
-            String query = "select m from Member m where m = :member";
-            Member findMember = em.createQuery(query, Member.class)
-                    .setParameter("member", member)
+            Member findMember = em.createNamedQuery("Member.findByUsername", Member.class)
+                    .setParameter("username", "member2")
                     .getSingleResult();
 
             System.out.println("findMember = " + findMember);
-
-            // 식별자 직접 전달
-            String query2 = "select m from Member m where m.id = :memberId";
-            Member findMember2 = em.createQuery(query2, Member.class)
-                    .setParameter("memberId", member.getId())
-                    .getSingleResult();
-
-            System.out.println("findMember2 = " + findMember2);
-
-            // entity 직접 사용 - FK
-            String query3 = "select m from Member m where m.team = :team";
-            Member findMember3 = em.createQuery(query3, Member.class)
-                    .setParameter("team", team1)
-                    .getSingleResult();
-            System.out.println("findMember3 = " + findMember3);
-
-            String query4 = "select m from Member m where m.team.id = :teamId";
-            Member findMember4 = em.createQuery(query4, Member.class)
-                    .setParameter("teamId", team1.getId())
-                    .getSingleResult();
-            System.out.println("findMember4 = " + findMember4);
 
             tx.commit();
         } catch (Exception e) {
