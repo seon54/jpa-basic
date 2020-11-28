@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.Collection;
 import java.util.List;
 
 import static jpabook.jpashop.domain.MemberType.ADMIN;
@@ -47,9 +48,8 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            // concat
-            System.out.println("===============  concat  ===============");
-            String query = "select 'a' || 'b' from Member m";
+            // 단일 값 연관 경로: 묵시적 내부 조인 발생, 탐색 O
+            String query = "select m.team.name from Member m";
             List<String> resultList = em.createQuery(query, String.class)
                     .getResultList();
 
@@ -57,41 +57,21 @@ public class JpaMain {
                 System.out.println("s = " + s);
             }
 
-            String query2 = "select concat('a', 'b') from Member m";
-            List<String> result2 = em.createQuery(query2, String.class)
+            // 컬렉션 값 연관 경로: 묵시적 내부 조인 발생, 탐색 X
+            String query2 = "select t.members from Team t";
+            Collection results2 = em.createQuery(query2, Collection.class)
                     .getResultList();
 
-            for (String s : result2) {
+            for (Object s : results2) {
                 System.out.println("s = " + s);
             }
 
-            // substring
-            System.out.println("===============  substring  ===============");
-            String query3 = "select substring(m.username, 2, 3) from Member m";
-            List<String> result3 = em.createQuery(query3, String.class)
+            // 명시적 조인
+            String query3 = "select m.username from Team t join t.members m";
+            List<String> results3 = em.createQuery(query3, String.class)
                     .getResultList();
 
-            for (String s : result3) {
-                System.out.println("s = " + s);
-            }
-
-            // trim
-            System.out.println("===============  trim  ===============");
-            String query4 = "select trim(m.username) from Member m";
-            List<String> result4 = em.createQuery(query4, String.class)
-                    .getResultList();
-
-            for (String s : result4) {
-                System.out.println("s = " + s);
-            }
-
-            // size
-            System.out.println("===============  size  ===============");
-            String query5 = "select size(t.members) from Team t";
-            List<Integer> result5 = em.createQuery(query5, Integer.class)
-                    .getResultList();
-
-            for (Integer s : result5) {
+            for (String s : results3) {
                 System.out.println("s = " + s);
             }
 
