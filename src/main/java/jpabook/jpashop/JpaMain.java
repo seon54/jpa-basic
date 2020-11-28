@@ -55,48 +55,34 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            // 묵시적 join
-            System.out.println("================================================================");
-            String query1 = "select m from Member m";
-            List<Member> results1 = em.createQuery(query1, Member.class).getResultList();
+            // entity 직접 사용
+            String query = "select m from Member m where m = :member";
+            Member findMember = em.createQuery(query, Member.class)
+                    .setParameter("member", member)
+                    .getSingleResult();
 
-            for (Member member1 : results1) {
-                System.out.println("member = " + member1 + " / team1: " + member1.getTeam().getName());
-            }
+            System.out.println("findMember = " + findMember);
 
-            // join fetch
-            System.out.println("============================ join fetch ====================================");
-            String query2 = "select m from Member m join fetch m.team";
-            List<Member> results2 = em.createQuery(query2, Member.class).getResultList();
+            // 식별자 직접 전달
+            String query2 = "select m from Member m where m.id = :memberId";
+            Member findMember2 = em.createQuery(query2, Member.class)
+                    .setParameter("memberId", member.getId())
+                    .getSingleResult();
 
-            for (Member r : results2) {
-                System.out.println("member = " + r.getUsername() + " / team1 = " + r.getTeam());
-            }
+            System.out.println("findMember2 = " + findMember2);
 
-            // join fetch(collection)
-            System.out.println("============================== join fetch (collection) ==================================");
-            String query3 = "select t From Team t join fetch t.members";
-            List<Team> results3 = em.createQuery(query3, Team.class).getResultList();
+            // entity 직접 사용 - FK
+            String query3 = "select m from Member m where m.team = :team";
+            Member findMember3 = em.createQuery(query3, Member.class)
+                    .setParameter("team", team1)
+                    .getSingleResult();
+            System.out.println("findMember3 = " + findMember3);
 
-            for (Team team : results3) {
-                System.out.println("team = " + team.getName());
-                for (Member teamMember : team.getMembers()) {
-                    System.out.println("--> teamMember = " + teamMember.getUsername());
-                }
-            }
-
-            // join fetch & distinct
-            System.out.println("============================== join fetch & distinct ==================================");
-            String query4 = "select distinct t From Team t join fetch t.members";
-            List<Team> results4 = em.createQuery(query4, Team.class).getResultList();
-
-            for (Team team : results4) {
-                System.out.println("team = " + team.getName());
-                for (Member teamMember : team.getMembers()) {
-                    System.out.println("--> teamMember = " + teamMember.getUsername());
-                }
-            }
-
+            String query4 = "select m from Member m where m.team.id = :teamId";
+            Member findMember4 = em.createQuery(query4, Member.class)
+                    .setParameter("teamId", team1.getId())
+                    .getSingleResult();
+            System.out.println("findMember4 = " + findMember4);
 
             tx.commit();
         } catch (Exception e) {
